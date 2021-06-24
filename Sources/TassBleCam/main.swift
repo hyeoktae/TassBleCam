@@ -51,7 +51,9 @@ if #available(macOS 10.12, *) {
   tRead.start()
   
   DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-    uart.writeString("run")
+//    let temp1 = UInt8(10)
+    let temp2 = CChar(10)
+    uart.writeData([temp2])
   }
   
   var exit = false
