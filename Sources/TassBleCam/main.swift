@@ -73,7 +73,7 @@ if let uart = uarts?[0], let pwmFirst = (pwms?[0]), let pwm = pwmFirst[.P18] {
     tRead.start()
     
     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-      uart.writeString("run\n")
+//      uart.writeString("run\n")
     }
     
     var exit = false
