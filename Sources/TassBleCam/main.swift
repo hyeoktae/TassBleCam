@@ -19,7 +19,7 @@ else {
 
 let s1 = SG90Servo(pwm)
 s1.enable()
-s1.move(to: .right)
+s1.move(to: .left)
 uart.configureInterface(speed: .S9600, bitsPerChar: .Eight, stopBits: .One, parity: .None)
 
 print("Ready...")
@@ -28,7 +28,9 @@ if #available(macOS 10.12, *) {
   let tRead = Thread() {
     while true {
       let s = uart.readString()
-      print("Echo: "+s, terminator: "")
+      if s != "" {
+        print("Echo: "+s, terminator: "")
+      }
       
       if let value = Int(s) {
         switch value {
