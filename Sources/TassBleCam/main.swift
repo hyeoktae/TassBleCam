@@ -12,7 +12,7 @@ let uarts = SwiftyGPIO.UARTs(for: .RaspberryPiPlusZero)
 let pwms = SwiftyGPIO.hardwarePWMs(for: .RaspberryPiPlusZero)
 //var uart = uarts[0]
 
-guard var uart = uarts?.first, let pwmFirst = (pwms?[0]), let pwm = pwmFirst[.P18]
+guard var uart = uarts?[0], let pwmFirst = (pwms?[0]), let pwm = pwmFirst[.P18]
 else {
   exit(0)
 }
@@ -22,44 +22,28 @@ s1.enable()
 uart.configureInterface(speed: .S9600, bitsPerChar: .Eight, stopBits: .One, parity: .None)
 
 print("Ready...")
-do {
-  print("hasAvailableData: ", try uart.hasAvailableData())
-} catch (let err) {
-  print("err: ", err.localizedDescription)
-}
-
 
 if #available(macOS 10.12, *) {
   let tRead = Thread() {
     while true {
-      do {
-        let state = try uart.hasAvailableData()
-        if state {
-          let s = uart.readString()
-          if s != "" {
-            print("Echo: "+s, terminator: "")
-          }
-          
-          if let value = Int(s) {
-            switch value {
-              case 0...60:
-                s1.move(to: .left)
-              case 61...120:
-                s1.move(to: .middle)
-              case 121...180:
-                s1.move(to: .right)
-              default:
-                s1.move(to: .left)
-            }
-          }
-        } else {
-          print("no able data")
-        }
-      } catch {
-        
+      let s = uart.readString()
+      if s != "" {
+        print("Echo: "+s, terminator: "")
       }
       
-      
+      if let value = Int(s) {
+        switch value {
+          case 0...60:
+            s1.move(to: .left)
+          case 61...120:
+            s1.move(to: .middle)
+          case 121...180:
+            s1.move(to: .right)
+          default:
+            s1.move(to: .left)
+        }
+        
+      }
     }
   }
   
@@ -67,18 +51,13 @@ if #available(macOS 10.12, *) {
   tRead.start()
   
   DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-//    let temp1 = UInt8(10)
-    let temp2 = CChar(10)
-    uart.writeData([temp2])
+    uart.writeString("run")
   }
   
   var exit = false
   
   while (!exit) {
-    let readText = uart.readData()
-    if !readText.isEmpty {
-      print("text: ", readText)
-    }
+    //  let readText = uart.readString()
     //
     //  if readText.contains("exit") {
     //    exit = true
@@ -86,7 +65,7 @@ if #available(macOS 10.12, *) {
     //  }
     
     print("Send: ", terminator: " ")
-    let input = readLine(strippingNewline: false)
+    var input = readLine(strippingNewline: false)
     exit = (input == "exit\n")
     
     if !exit {
