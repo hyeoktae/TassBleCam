@@ -1,5 +1,4 @@
 import Foundation
-import PhotosUI
 
 class CameraManager {
   enum CameraError: Error {
