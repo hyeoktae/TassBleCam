@@ -59,7 +59,7 @@ if #available(macOS 10.12, *) {
   var exit = false
   
   while (!exit) {
-    let readText = uart.readLine()
+    let readText = uart.readData()
     if !readText.isEmpty {
       print("text: ", readText)
     }
