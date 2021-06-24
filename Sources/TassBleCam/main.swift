@@ -21,12 +21,20 @@ if let uart = uarts?[0], let pwmFirst = (pwms?[0]), let pwm = pwmFirst[.P18] {
   
   print("Ready...")
   
+  var buffer: String = "" {
+    willSet (new) {
+      if new.contains("\n") {
+        print(new)
+      }
+    }
+  }
+  
   if #available(macOS 10.12, *) {
     let tRead = Thread() {
       while true {
         let s = uart.readString()
         if s != "" {
-          print("Echo: "+s, terminator: "")
+          buffer += s
         }
         
         if let value = Int(s) {
@@ -49,7 +57,7 @@ if let uart = uarts?[0], let pwmFirst = (pwms?[0]), let pwm = pwmFirst[.P18] {
     tRead.start()
     
     DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-      uart.writeString("run")
+      uart.writeString("run\n")
     }
     
     var exit = false
