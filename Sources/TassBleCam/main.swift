@@ -91,7 +91,7 @@ if let uart = uarts?[0], let pwmFirst = (pwms?[0]), let pwm = pwmFirst[.P18] {
       exit = (input == "exit\n")
       
       if !exit {
-        uart.writeString(input ?? "inputErr")
+//        uart.writeString(input ?? "inputErr")
       }
       
     }
