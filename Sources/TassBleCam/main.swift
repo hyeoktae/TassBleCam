@@ -24,7 +24,7 @@ if let uart = uarts?[0], let pwmFirst = (pwms?[0]), let pwm = pwmFirst[.P18] {
   var buffer: String = "" {
     willSet (new) {
       if new.contains("\n") {
-        print(new)
+        print("new: ", new)
       }
     }
   }
