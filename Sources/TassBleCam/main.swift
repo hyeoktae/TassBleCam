@@ -57,7 +57,10 @@ if #available(macOS 10.12, *) {
   var exit = false
   
   while (!exit) {
-    //  let readText = uart.readString()
+    let readText = uart.readLine()
+    if !readText.isEmpty {
+      print("text: ", readText)
+    }
     //
     //  if readText.contains("exit") {
     //    exit = true
@@ -65,7 +68,7 @@ if #available(macOS 10.12, *) {
     //  }
     
     print("Send: ", terminator: " ")
-    var input = readLine(strippingNewline: false)
+    let input = readLine(strippingNewline: false)
     exit = (input == "exit\n")
     
     if !exit {
