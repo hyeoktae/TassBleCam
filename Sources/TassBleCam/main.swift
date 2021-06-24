@@ -1,20 +1,25 @@
 import SwiftyGPIO //Remove this import if you are compiling manually with switfc
 #if os(Linux)
 import Glibc
-#else
+#elses
 import Darwin.C
 #endif
 import Foundation
+import SG90Servo
 
 
 let uarts = SwiftyGPIO.UARTs(for: .RaspberryPiPlusZero)
+let pwms = SwiftyGPIO.hardwarePWMs(for: .RaspberryPiPlusZero)
 //var uart = uarts[0]
 
-guard let uart = uarts?.first
+guard let uart = uarts?.first, let pwmFirst = (pwms?[0]), let pwm = pwmFirst[.P18]
 else {
   exit(0)
 }
 
+let s1 = SG90Servo(pwm)
+s1.enable()
+s1.move(to: .right)
 uart.configureInterface(speed: .S9600, bitsPerChar: .Eight, stopBits: .One, parity: .None)
 
 print("Ready...")
@@ -24,6 +29,20 @@ if #available(macOS 10.12, *) {
     while true {
       let s = uart.readString()
       print("Echo: "+s, terminator: "")
+      
+      if let value = Int(s) {
+        switch value {
+          case 0...60:
+            s1.move(to: .left)
+          case 61...120:
+            s1.move(to: .middle)
+          case 121...180:
+            s1.move(to: .right)
+          default:
+            s1.move(to: .left)
+        }
+        
+      }
     }
   }
   
