@@ -26,7 +26,16 @@ if let uart = uarts?[0], let pwmFirst = (pwms?[0]), let pwm = pwmFirst[.P18] {
       if new.contains("\n") {
         print("new: ", new)
         if new.contains("read") {
-          uart.writeString("read complete!!!")
+//          uart.writeString("read complete!!!")
+          let cam = CameraManager()
+          switch cam.photoData() {
+          case .success(let data):
+            print("success take a photo")
+            let temp = [UInt8](Array(data)).map{CChar(bitPattern: $0)}
+            uart.writeData(temp)
+          case .failure(let err):
+            print("Error: \(err.localizedDescription)")
+          }
         }
       }
     }
@@ -38,6 +47,10 @@ if let uart = uarts?[0], let pwmFirst = (pwms?[0]), let pwm = pwmFirst[.P18] {
         let s = uart.readString()
         if s != "" {
           buffer += s
+        }
+        
+        if s == "\n" {
+          buffer = ""
         }
         
         if let value = Int(s) {
