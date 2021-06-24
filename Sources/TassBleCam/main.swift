@@ -12,7 +12,7 @@ let uarts = SwiftyGPIO.UARTs(for: .RaspberryPiPlusZero)
 let pwms = SwiftyGPIO.hardwarePWMs(for: .RaspberryPiPlusZero)
 //var uart = uarts[0]
 
-guard let uart = uarts?.first, let pwmFirst = (pwms?[0]), let pwm = pwmFirst[.P18]
+guard var uart = uarts?.first, let pwmFirst = (pwms?[0]), let pwm = pwmFirst[.P18]
 else {
   exit(0)
 }
@@ -23,27 +23,39 @@ uart.configureInterface(speed: .S9600, bitsPerChar: .Eight, stopBits: .One, pari
 
 print("Ready...")
 
+print("hasAvailableData: ", try? uart.hasAvailableData())
+
 if #available(macOS 10.12, *) {
   let tRead = Thread() {
     while true {
-      let s = uart.readString()
-      if s != "" {
-        print("Echo: "+s, terminator: "")
-      }
-      
-      if let value = Int(s) {
-        switch value {
-          case 0...60:
-            s1.move(to: .left)
-          case 61...120:
-            s1.move(to: .middle)
-          case 121...180:
-            s1.move(to: .right)
-          default:
-            s1.move(to: .left)
+      do {
+        let state = try uart.hasAvailableData()
+        if state {
+          let s = uart.readString()
+          if s != "" {
+            print("Echo: "+s, terminator: "")
+          }
+          
+          if let value = Int(s) {
+            switch value {
+              case 0...60:
+                s1.move(to: .left)
+              case 61...120:
+                s1.move(to: .middle)
+              case 121...180:
+                s1.move(to: .right)
+              default:
+                s1.move(to: .left)
+            }
+          }
+        } else {
+          print("no able data")
         }
+      } catch {
         
       }
+      
+      
     }
   }
   
