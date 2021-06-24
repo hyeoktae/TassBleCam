@@ -25,6 +25,9 @@ if let uart = uarts?[0], let pwmFirst = (pwms?[0]), let pwm = pwmFirst[.P18] {
     willSet (new) {
       if new.contains("\n") {
         print("new: ", new)
+        if new.contains("read") {
+          uart.writeString("read complete!!!")
+        }
       }
     }
   }
