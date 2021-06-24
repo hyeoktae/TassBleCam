@@ -1,7 +1,7 @@
 import SwiftyGPIO //Remove this import if you are compiling manually with switfc
 #if os(Linux)
 import Glibc
-#elses
+#else
 import Darwin.C
 #endif
 import Foundation
