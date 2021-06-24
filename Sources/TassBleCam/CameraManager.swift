@@ -1,4 +1,5 @@
 import Foundation
+import PhotosUI
 
 class CameraManager {
   enum CameraError: Error {
@@ -45,11 +46,12 @@ class CameraManager {
 
     let path = documentURL.appendingPathComponent("tassImg.jpg")
 
-    let state = shell(command: "raspistill -o \(path.path)")
+    let state = shell(command: "raspistill -w 640 -h 240 -q 1 -o \(path.path)")
 
     if state == 0 {
       do {
         let photo = try Data(contentsOf: path)
+        
         print("success get a photo: \(photo.count)")
         return .success(photo)
       } catch (let err) {
