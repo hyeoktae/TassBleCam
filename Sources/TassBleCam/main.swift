@@ -19,7 +19,6 @@ else {
 
 let s1 = SG90Servo(pwm)
 s1.enable()
-s1.move(to: .left)
 uart.configureInterface(speed: .S9600, bitsPerChar: .Eight, stopBits: .One, parity: .None)
 
 print("Ready...")
@@ -50,6 +49,10 @@ if #available(macOS 10.12, *) {
   
   
   tRead.start()
+  
+  DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+    uart.writeString("run")
+  }
   
   var exit = false
   
