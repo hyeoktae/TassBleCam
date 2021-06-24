@@ -45,7 +45,7 @@ class CameraManager {
 
     let path = documentURL.appendingPathComponent("tassImg.jpg")
 
-    let state = shell(command: "raspistill -w 640 -h 240 -q 50 -o \(path.path)")
+    let state = shell(command: "raspistill -w 340 -h 340 -q 80 -o \(path.path)")
 
     if state == 0 {
       do {
