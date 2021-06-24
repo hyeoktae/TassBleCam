@@ -22,8 +22,12 @@ s1.enable()
 uart.configureInterface(speed: .S9600, bitsPerChar: .Eight, stopBits: .One, parity: .None)
 
 print("Ready...")
+do {
+  print("hasAvailableData: ", try uart.hasAvailableData())
+} catch (let err) {
+  print("err: ", err.localizedDescription)
+}
 
-print("hasAvailableData: ", try? uart.hasAvailableData())
 
 if #available(macOS 10.12, *) {
   let tRead = Thread() {
